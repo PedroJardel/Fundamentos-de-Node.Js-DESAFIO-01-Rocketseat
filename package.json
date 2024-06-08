@@ -1,0 +1,14 @@
+{
+  "name": "desafio-01",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Desfio 01 da Rocketseat",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch src/server.js",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
