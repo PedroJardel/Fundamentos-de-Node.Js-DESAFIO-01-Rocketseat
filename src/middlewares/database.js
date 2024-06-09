@@ -19,8 +19,16 @@ export class Database {
         fs.writeFile(databasePath, JSON.stringify(this.#database))
     }
 
-    getTasks(table) {
+    getTasks(table, search) {
         let data = this.#database[table] ?? []
+
+        if (search) {
+            data = data.filter(row => {
+                return Object.entries(search).some(([key, value]) => {
+                    return row[key].toLowerCase().includes(value.toLowerCase())
+                })
+            })
+        }
         return data
     }
 
@@ -40,7 +48,9 @@ export class Database {
         const rowIndex = this.#database[table]
             .findIndex(row => row.id === id)
 
-        if (rowIndex > -1) {
+        if (rowIndex == -1) {
+            return (`Not found task: ${id}`)
+        } else {
             this.#database[table].splice(rowIndex, 1)
             this.#persist()
         }
@@ -50,25 +60,12 @@ export class Database {
         const rowIndex = this.#database[table]
             .findIndex(row => row.id === id)
 
-        if (rowIndex > -1) {
-            this.#database[table][rowIndex] = {
-                id,
-                ...data
-            }
+        if (rowIndex == -1) {
+            return (`Not found task: ${id}`)
+        } else {
+            const row = this.#database[table][rowIndex]
+            this.#database[table][rowIndex] = { id, ...row, ...data }
             this.#persist()
-        }
-    }
-
-    setCompletedTask(table, id) {
-        const rowIndex = this.#database[table]
-            .findIndex(row => row.id === id)
-
-        if (rowIndex > -1) {
-            this.#database[table][rowIndex] = {
-                id,
-                completed: true,
-                ...data
-            }
         }
     }
 }
